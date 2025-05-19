@@ -57,7 +57,7 @@ namespace JobPortalForFreshers.Controllers
         }
 
         [HttpGet("GetUserAppliedJobs")]
-        public IActionResult GetUserAppliedJobsStatus(int userId)
+        public IActionResult GetUserAppliedJobsStatus(int UserId)
         {
             List<object> applications = new List<object>();
 
@@ -65,7 +65,7 @@ namespace JobPortalForFreshers.Controllers
             {
                 using (SqlCommand cmd = new SqlCommand("SELECT JobTitle, CompanyName, Status FROM JobApplications WHERE UserID = @UserID", conn))
                 {
-                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@UserID", UserId);
 
                     conn.Open();
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -105,13 +105,19 @@ namespace JobPortalForFreshers.Controllers
                     if (dt.Rows.Count == 0)
                         return NotFound("Application not found.");
 
-                    var application = new Dictionary<string, object>();
-                    foreach (DataColumn col in dt.Columns)
+                    var applications = new List<Dictionary<string, object>>();
+
+                    foreach (DataRow row in dt.Rows)
                     {
-                        application[col.ColumnName] = dt.Rows[0][col] == DBNull.Value ? null : dt.Rows[0][col];
+                        var application = new Dictionary<string, object>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            application[col.ColumnName] = row[col] == DBNull.Value ? null : row[col];
+                        }
+                        applications.Add(application);
                     }
 
-                    return Ok(application);
+                    return Ok(applications);
                 }
             }
         }

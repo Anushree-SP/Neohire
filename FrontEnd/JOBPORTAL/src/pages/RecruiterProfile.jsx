@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaUserCircle, FaEnvelope, FaIdBadge, FaUserTag } from "react-icons/fa";
+import { FaUserCircle, FaEnvelope, FaIdBadge, FaUserTag, FaArrowLeft } from "react-icons/fa";
 
 const RecruiterProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -8,6 +9,7 @@ const RecruiterProfile = () => {
   const [error, setError] = useState(null);
 
   const userEmail = localStorage.getItem("userEmail");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userEmail) {
@@ -34,6 +36,10 @@ const RecruiterProfile = () => {
       });
   }, [userEmail]);
 
+  const handleBack = () => {
+    navigate("/recruiter-dashboard"); // Replace with your actual recruiter dashboard route
+  };
+
   if (loading)
     return <div className="text-center text-blue-500 text-lg font-semibold">Loading...</div>;
 
@@ -43,6 +49,15 @@ const RecruiterProfile = () => {
   return (
     <div className="flex justify-center items-center min-h-screen py-10 px-4">
       <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-xl transition-transform transform hover:scale-105">
+        
+        {/* Back Button */}
+        <button
+          onClick={handleBack}
+          className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
+        >
+          <FaArrowLeft className="mr-2" /> Back to Dashboard
+        </button>
+
         <div className="flex flex-col items-center">
           <FaUserCircle className="text-blue-500 text-6xl mb-3" />
           <h2 className="text-xl font-bold text-blue-700">Recruiter Profile</h2>

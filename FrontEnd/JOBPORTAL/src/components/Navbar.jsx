@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link, NavLink as RouterNavLink, useNavigate } from "react-router-dom"; // Renaming NavLink import
-import { Menu, X } from "lucide-react"; // Mobile Menu Icons
+import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { Link, NavLink as RouterNavLink } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,7 +9,6 @@ const Navbar = () => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  // Ensure role is a valid string
   const dashboardRoute =
     role === "1"
       ? "/user-dashboard"
@@ -24,114 +24,89 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex justify-between items-center bg-blue-900 text-white py-2 px-6 shadow-md">
-    <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-      {/* Logo */}
-      <h2 className="text-2xl font-extrabold bg-gradient-to-r from-yellow-300 to-orange-500 text-transparent bg-clip-text flex items-center">
-        🚀 NeoHire
-      </h2>
-  
-      {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-6 text-white font-large font-bold">
-        <RouterNavLink to="/" exact activeClassName="text-indigo-200">
-          Home
-        </RouterNavLink>
-        <RouterNavLink to="/about" activeClassName="text-indigo-200">
-          About
-        </RouterNavLink>
-        <RouterNavLink to="/jobs" activeClassName="text-indigo-200">
-          Jobs
-        </RouterNavLink>
-        {token && (
-          <RouterNavLink to={dashboardRoute} activeClassName="text-indigo-200">
-            Dashboard
-          </RouterNavLink>
-        )}
-        {token ? (
-          <button
-            onClick={handleLogout}
-            className="text-red-400 hover:text-red-300 transition"
-          >
-            Logout
-          </button>
-        ) : (
-          <>
-            <RouterNavLink to="/login" activeClassName="text-indigo-200">
-              Login
-            </RouterNavLink>
-            <RouterNavLink to="/register" activeClassName="text-indigo-200">
-              Register
-            </RouterNavLink>
-          </>
-        )}
+    <nav className="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <Link to="/" className="text-2xl font-extrabold bg-gradient-to-r from-yellow-300 to-orange-500 text-transparent bg-clip-text">
+          🚀 NeoHire
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6 font-semibold">
+          <CustomNavLink to="/">Home</CustomNavLink>
+          <CustomNavLink to="/about">About</CustomNavLink>
+          <CustomNavLink to="/jobs">Jobs</CustomNavLink>
+          {token && <CustomNavLink to={dashboardRoute}>Dashboard</CustomNavLink>}
+          {token ? (
+            <button
+              onClick={handleLogout}
+              className="text-red-400 hover:text-red-300 transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <CustomNavLink to="/login">Login</CustomNavLink>
+              <CustomNavLink to="/register">Register</CustomNavLink>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
+          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
-  
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden text-white"
-        onClick={() => setIsOpen(!isOpen)}
+
+      {/* Mobile Menu Dropdown */}
+      <div
+        className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden bg-blue-800 ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
-        {isOpen ? <X size={28} /> : <Menu size={28} />}
-      </button>
-    </div>
-  
-    {/* Mobile Menu with Fixed Height */}
-    <div
-      className={`md:hidden transition-all duration-300 ${
-        isOpen ? "opacity-100 h-[180px]" : "opacity-0 h-0 overflow-hidden"
-      } bg-blue-600`}
-    >
-      <div className="flex flex-col text-center space-y-4 text-white">
-        <RouterNavLink to="/" onClick={() => setIsOpen(false)}>
-          Home
-        </RouterNavLink>
-        <RouterNavLink to="/about" onClick={() => setIsOpen(false)}>
-          About
-        </RouterNavLink>
-        <RouterNavLink to="/jobs" onClick={() => setIsOpen(false)}>
-          Jobs
-        </RouterNavLink>
-        {token && (
-          <RouterNavLink to={dashboardRoute} onClick={() => setIsOpen(false)}>
-            Dashboard
-          </RouterNavLink>
-        )}
-        {token ? (
-          <button
-            onClick={() => {
-              handleLogout();
-              setIsOpen(false);
-            }}
-            className="text-red-400 hover:text-red-300 transition"
-          >
-            Logout
-          </button>
-        ) : (
-          <>
-            <RouterNavLink to="/login" onClick={() => setIsOpen(false)}>
-              Login
-            </RouterNavLink>
-            <RouterNavLink to="/register" onClick={() => setIsOpen(false)}>
-              Register
-            </RouterNavLink>
-          </>
-        )}
+        <div className="flex flex-col items-center space-y-4 py-4 text-white font-semibold">
+          <CustomNavLink to="/" onClick={() => setIsOpen(false)}>Home</CustomNavLink>
+          <CustomNavLink to="/about" onClick={() => setIsOpen(false)}>About</CustomNavLink>
+          <CustomNavLink to="/jobs" onClick={() => setIsOpen(false)}>Jobs</CustomNavLink>
+          {token && (
+            <CustomNavLink to={dashboardRoute} onClick={() => setIsOpen(false)}>
+              Dashboard
+            </CustomNavLink>
+          )}
+          {token ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
+              className="text-red-400 hover:text-red-300 transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <CustomNavLink to="/login" onClick={() => setIsOpen(false)}>Login</CustomNavLink>
+              <CustomNavLink to="/register" onClick={() => setIsOpen(false)}>Register</CustomNavLink>
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  </nav>
-  
+    </nav>
   );
 };
 
-// ✅ Reusable NavLink Component with Hover Effect
 const CustomNavLink = ({ to, children, onClick }) => (
-  <Link
+  <RouterNavLink
     to={to}
-    className="relative px-3 py-2 hover:underline hover:underline-offset-4 transition duration-300"
     onClick={onClick}
+    className={({ isActive }) =>
+      `px-3 py-2 transition duration-200 ${
+        isActive ? "text-indigo-200 underline underline-offset-4" : "hover:underline"
+      }`
+    }
   >
     {children}
-  </Link>
+  </RouterNavLink>
 );
 
 export default Navbar;

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Briefcase } from "lucide-react"; // Professional Icon
+import { useNavigate, useLocation } from "react-router-dom";
+import { Briefcase } from "lucide-react";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -8,9 +8,11 @@ export default function Login() {
     const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
         if (!email || !password) {
             setErrorMessage("Please enter email and password!");
             return;
@@ -31,18 +33,27 @@ export default function Login() {
                     return;
                 }
 
+                // Save credentials to localStorage
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("role", data.role);
                 localStorage.setItem("userId", data.id);
                 localStorage.setItem("userEmail", email);
-                
- 
-                navigateBasedOnRole(Number(data.role));
+
+                const intendedJobId = sessionStorage.getItem("intendedJobApplication");
+
+                if (intendedJobId && data.role === 1) {
+                    sessionStorage.removeItem("intendedJobApplication");
+                    navigate(`/apply/${intendedJobId}`);
+                } else {
+                    navigateBasedOnRole(Number(data.role));
+                }
             } else {
                 setErrorMessage("Invalid email or password. Please try again.");
+                sessionStorage.removeItem("intendedJobApplication");
             }
         } catch (error) {
             setErrorMessage("Something went wrong. Please try again later.");
+            sessionStorage.removeItem("intendedJobApplication");
         }
     };
 
@@ -56,12 +67,24 @@ export default function Login() {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1); // Navigate to the previous page
+    };
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-white">
             <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                <div className="flex items-center justify-center mb-4">
-                    <Briefcase className="w-10 h-10 text-blue-600" />
-                    <h2 className="text-3xl font-extrabold text-gray-800 ml-2">NeoHire</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                        <Briefcase className="w-10 h-10 text-blue-600" />
+                        <h2 className="text-3xl font-extrabold text-gray-800 ml-2">NeoHire</h2>
+                    </div>
+                    <button
+                        onClick={handleBack}
+                        className="text-blue-600 hover:underline"
+                    >
+                        Back
+                    </button>
                 </div>
 
                 <p className="text-center text-gray-600 mb-6">Find your dream job today!</p>

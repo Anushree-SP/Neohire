@@ -63,9 +63,10 @@ const Home = () => {
       </section>
 
 
-      <footer className="bg-blue-900 text-white py-6 mt-auto">
+      <footer className="bg-blue-900 text-white py-8 mt-auto">
   <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between px-6 text-center md:text-left">
     
+    {/* About Section */}
     <div className="w-full md:w-1/3 mb-6 md:mb-0">
       <h3 className="text-xl font-bold">Job Portal</h3>
       <p className="text-gray-300 mt-2 text-sm">
@@ -73,33 +74,29 @@ const Home = () => {
       </p>
     </div>
 
-    <div className="w-full md:w-1/3 flex flex-col items-center md:items-start mb-6 md:mb-0">
+    {/* Quick Links */}
+    <div className="w-full md:w-1/3 mb-6 md:mb-0">
       <h4 className="text-lg font-semibold">Quick Links</h4>
       <ul className="mt-2 space-y-2 text-gray-300 text-sm">
-        <li className="hover:text-white cursor-pointer">About Us</li>
-        <li className="hover:text-white cursor-pointer">Contact</li>
-        <li className="hover:text-white cursor-pointer">Privacy Policy</li>
-        <li className="hover:text-white cursor-pointer">Terms & Conditions</li>
+        <li><a href="#" className="hover:text-white">About Us</a></li>
+        <li><a href="#" className="hover:text-white">Contact</a></li>
+        <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+        <li><a href="#" className="hover:text-white">Terms & Conditions</a></li>
       </ul>
     </div>
 
-    <div className="w-full md:w-1/3 flex flex-col items-center md:items-end">
+    {/* Follow Us (Plain Text Links) */}
+    <div className="w-full md:w-1/3">
       <h4 className="text-lg font-semibold">Follow Us</h4>
-      <div className="flex mt-2 space-x-4">
-        <a href="#" className="text-gray-300 hover:text-white text-lg">
-          <i className="fab fa-facebook"></i>
-        </a>
-        <a href="#" className="text-gray-300 hover:text-white text-lg">
-          <i className="fab fa-twitter"></i>
-        </a>
-        <a href="#" className="text-gray-300 hover:text-white text-lg">
-          <i className="fab fa-linkedin"></i>
-        </a>
-      </div>
+      <ul className="mt-2 space-y-2 text-gray-300 text-sm">
+        <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">Facebook</a></li>
+        <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">Twitter</a></li>
+        <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">LinkedIn</a></li>
+      </ul>
     </div>
   </div>
 
-  <div className="text-center text-gray-400 text-sm mt-4">
+  <div className="text-center text-gray-400 text-sm mt-6">
     © {new Date().getFullYear()} Job Portal. All rights reserved.
   </div>
 </footer>

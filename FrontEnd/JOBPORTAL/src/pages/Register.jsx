@@ -7,10 +7,17 @@ export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [logginAs, setLogginAs] = useState(1);
+    const [passwordError, setPasswordError] = useState("");
     const navigate = useNavigate();
+
     const handleRegister = async (event) => {
         event.preventDefault();
-    
+
+        if (password.length < 8) {
+            setPasswordError("Password must be at least 8 characters long.");
+            return;
+        }
+
         const registerData = {
             UserId: crypto.randomUUID(),
             FirstName: firstName,
@@ -19,9 +26,9 @@ export default function Register() {
             Password: password,
             LogginAs: logginAs,
         };
-    
+
         console.log("Registering user with data:", registerData);
-    
+
         try {
             const response = await fetch(
                 "https://localhost:7278/api/RegisterForm/InsertCredentialsOfUser",
@@ -31,7 +38,7 @@ export default function Register() {
                     body: JSON.stringify(registerData),
                 }
             );
-    
+
             const text = await response.text();
             let result;
             try {
@@ -39,9 +46,9 @@ export default function Register() {
             } catch {
                 result = text;
             }
-    
+
             console.log("API Response:", result);
-    
+
             if (!response.ok) {
                 console.error("API Error:", result);
                 alert(`Error: ${result.message || result || "Registration failed"}`);
@@ -54,7 +61,7 @@ export default function Register() {
             alert("Failed to connect to server. Please try again later.");
         }
     };
-    
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-200">
@@ -80,22 +87,34 @@ export default function Register() {
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                         onChange={(e) => setEmail(e.target.value)} 
                     />
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-                        onChange={(e) => setPassword(e.target.value)} 
-                    />
+                    <div>
+                        <input 
+                            type="password" 
+                            placeholder="Password (min 8 characters)" 
+                            className={`w-full p-3 border ${passwordError ? "border-red-500" : "border-gray-300"} rounded-md focus:ring-2 focus:ring-blue-500`} 
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (e.target.value.length >= 8) {
+                                    setPasswordError("");
+                                }
+                            }} 
+                        />
+                        {passwordError && (
+                            <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                        )}
+                    </div>
                     <select 
                         className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                         onChange={(e) => setLogginAs(parseInt(e.target.value))}
                     >
                         <option value="1">Job Seeker</option>
                         <option value="2">Recruiter</option>
-                        <option value="3">Admin</option>
+                      
                     </select>
                     <button 
-                        className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300">
+                        type="submit"
+                        className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300"
+                    >
                         Register
                     </button>
                 </form>

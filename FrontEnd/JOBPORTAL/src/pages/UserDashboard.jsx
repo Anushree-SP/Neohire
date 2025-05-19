@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaBriefcase, FaSignOutAlt } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import UserApplicationView from "./UserApplicationView";
 
 const UserDashboard = () => {
   const [view, setView] = useState("profile");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("userEmail"); // Remove user email from storage
-    localStorage.removeItem("token"); // Remove authentication token if stored
-    navigate("/login"); // Redirect to login page
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
@@ -34,13 +35,13 @@ const UserDashboard = () => {
           </button>
           <button
             className="flex items-center px-4 py-3 w-full rounded-lg hover:bg-red-600 transition duration-300"
-            onClick={handleLogout} // Attach the logout function
+            onClick={() => setShowLogoutModal(true)} // Show modal instead of direct logout
           >
             <FaSignOutAlt className="mr-3" /> Logout
           </button>
         </nav>
       </aside>
-      
+
       {/* Main Content */}
       <main className="flex-1 p-6">
         {/* Mobile Toggle */}
@@ -64,6 +65,30 @@ const UserDashboard = () => {
           {view === "profile" ? <UserProfile /> : <UserApplicationView />}
         </div>
       </main>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full">
+            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+            <p className="mb-6 text-gray-700">Are you sure you want to logout?</p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                onClick={() => setShowLogoutModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

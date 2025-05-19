@@ -48,7 +48,7 @@ export default function JobDetails() {
       
       <div className="mt-6 space-y-3 bg-gray-50 p-4 rounded-md">
         <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">📍 Location:</span> {job?.location || "Not specified"}</p>
-        <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">💰 Salary:</span> {job?.ctc ? `${job.ctc} LPA` : "Not specified"}</p>
+        <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">💰 Salary:</span> {job?.ctc ? `${job.ctc} ` : "Not specified"}</p>
         <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">💰 jobId:</span> {job?.ctc ? `${job.jobId} ID` : "Not specified"}</p>
         <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">🔹 Type:</span> {job?.jobType || "Not specified"}</p>
         <p className="text-gray-700 flex items-center"><span className="w-40 inline-block font-medium">📌 Positions:</span> {job?.vacancy || "Not specified"}</p>

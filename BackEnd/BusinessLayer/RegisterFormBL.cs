@@ -20,6 +20,7 @@ namespace JobPortalForFreshers.BusinessLayer
                 string userId = GenerateUniqueUserId(); 
                 string hashedPassword = registerForm.Password;
 
+
                 int result = dBServer.ExecuteOnlyQuery("SP_REGISTERFORM_CRUD", CommandType.StoredProcedure,
                     new SqlParameter("@Action", "INSERT"),
                     new SqlParameter("@UserId", userId),

@@ -3,11 +3,13 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { Briefcase, Bookmark, Search, ArrowLeft } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,16 +17,43 @@ const Jobs = () => {
       .get("https://localhost:7278/api/Recruiter/AllJobs")
       .then((response) => setJobs(response.data))
       .catch((error) => console.error("Error fetching jobs:", error));
+
+    checkUserLoginStatus();
   }, []);
 
-  // Filter Jobs based on search term
+  const checkUserLoginStatus = () => {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const role = localStorage.getItem("role") || sessionStorage.getItem("role");
+
+    // Only set isLoggedIn to true if role is '1' (User)
+    setIsLoggedIn(!!token && role === "1");
+  };
+
+  const handleApplyClick = (jobId) => {
+    const role = localStorage.getItem("role") || sessionStorage.getItem("role");
+
+    if (!role || role !== "1") {
+      toast.info("Only users can apply for jobs. Please login as a user.", {
+        position: "top-center",
+        autoClose: 3000
+      });
+
+      sessionStorage.setItem("intendedJobApplication", jobId);
+      navigate("/login", {
+        state: { from: "/jobs", message: "Please login as a user to apply for jobs" }
+      });
+      return;
+    }
+
+    navigate(`/apply/${jobId}`);
+  };
+
   const filteredJobs = jobs.filter(
     (job) =>
       job.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.companyName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort Jobs based on selected criteria
   const sortedJobs = [...filteredJobs].sort((a, b) => {
     if (sortBy === "salary") return b.ctc - a.ctc;
     if (sortBy === "company") return a.companyName.localeCompare(b.companyName);
@@ -33,9 +62,8 @@ const Jobs = () => {
     return 0;
   });
 
-  // Function to handle navigation back to home page
   const handleBackToHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -60,15 +88,13 @@ const Jobs = () => {
         transition={{ duration: 0.8 }}
       >
         <h1 className="text-4xl md:text-5xl font-bold text-orange-500 mb-4">
-          Welcome to Jobify <span className="text-3xl">😊</span>
+          Welcome to Neohire <span className="text-3xl">😊</span>
         </h1>
-
         <h2 className="text-xl md:text-2xl font-medium text-gray-800">
           <span className="text-blue-600 font-semibold">Search</span> ,
-          <span className="text-purple-600 font-semibold"> Apply</span> &
-          <span className="text-orange-500 font-semibold"> Get the right job for yourself</span>
+          <span className="text-purple-600 font-semibold"> Apply</span> &nbsp;
+          <span className="text-orange-500 font-semibold">Get the right job for yourself</span>
         </h2>
-
         <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">
           Find your dream job from thousands of job listings across industries, locations, and roles!
         </p>
@@ -86,7 +112,6 @@ const Jobs = () => {
           <Search className="absolute left-4 text-gray-400" size={20} />
         </div>
 
-        
         <div className="flex items-center w-full md:w-1/3 justify-center md:justify-end">
           <label className="font-semibold mr-3 text-gray-700">Sort By:</label>
           <select
@@ -103,7 +128,6 @@ const Jobs = () => {
         </div>
       </div>
 
-     
       <div className="w-full max-w-5xl mb-6 px-4">
         <p className="text-gray-600 font-medium">
           {sortedJobs.length} {sortedJobs.length === 1 ? "job" : "jobs"} found
@@ -111,7 +135,6 @@ const Jobs = () => {
         </p>
       </div>
 
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl px-4">
         {sortedJobs.length > 0 ? (
           sortedJobs.map((job, index) => (
@@ -149,7 +172,7 @@ const Jobs = () => {
                   ⏳ {job.jobType}
                 </span>
                 <span className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                  💰 {job.ctc} LPA
+                  💰 {job.ctc}
                 </span>
               </div>
 
@@ -163,10 +186,9 @@ const Jobs = () => {
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   className="w-1/2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2.5 rounded-lg hover:from-purple-700 hover:to-blue-700 font-medium shadow-sm"
+                  onClick={() => handleApplyClick(job.jobId)}
                 >
-                  <Link to={`/apply/${job.jobId}`} className="block w-full">
-                    Apply Now
-                  </Link>
+                  Apply Now
                 </motion.button>
               </div>
             </motion.div>

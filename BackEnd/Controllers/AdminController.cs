@@ -2,6 +2,7 @@
 using JobPortalForFreshers.Madals;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace JobPortalForFreshers.Controllers
 {
@@ -45,12 +46,57 @@ namespace JobPortalForFreshers.Controllers
             return Ok(result);
         }
 
-        // Delete User
-        [HttpDelete("users/{id}")]
-        public IActionResult DeleteUser(int id)
+        //// Delete User
+        //[HttpDelete("users/{id}")]
+        //public IActionResult DeleteUser(int id)
+        //{
+        //    string result = _registerFormBL.DeleteUser(id);
+        //    return Ok(result);
+        //}
+
+
+
+        [HttpDelete]
+        [Route("Delete")]
+        public IActionResult DeleteCustomerDetials([FromQuery] string userId)
         {
-            string result = _registerFormBL.DeleteUser(id);
-            return Ok(result);
+            #region Declaration
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand sqlCommand = new SqlCommand();
+            string sqlConnectionString = "Server=ANU\\SQLEXPRESS;Database=JOBPORTAL;Trusted_Connection=True;TrustServerCertificate=true;";
+            #endregion
+
+            try
+            {
+                sqlConnection.ConnectionString = sqlConnectionString;
+                sqlConnection.Open();
+
+                // Delete customer data using userId
+                string deleteCustomerQuery = "DELETE FROM REGISTERFORM WHERE UserId = @UserId";
+
+                sqlCommand.Connection = sqlConnection;
+                sqlCommand.CommandText = deleteCustomerQuery;
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+                sqlCommand.Parameters.AddWithValue("@UserId", userId);  // Using parameterized query to prevent SQL injection
+                int count = sqlCommand.ExecuteNonQuery();
+
+                if (count > 0)
+                {
+                    return Ok("Customer details deleted successfully.");
+                }
+                else
+                {
+                    return NotFound("Customer not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
         }
+
+
+
     }
 }
+

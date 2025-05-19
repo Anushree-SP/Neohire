@@ -36,7 +36,7 @@ namespace JobPortalForFreshers.Controllers
                 }
 
                 // Save file details in SQL Server
-                using (SqlConnection conn = new SqlConnection("Server=ANU\\SQLEXPRESS;Database=JOBPORTAL;Integrated Security=True;Trust Server Certificate=True"))
+                using (SqlConnection conn = new SqlConnection("Server=ANU\\SQLEXPRESS;Database=JOBPORTAL;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"))
                 {
                     string query = "INSERT INTO ResumeFiles (UserId, JobId, FileName, FilePath) VALUES (@UserId, @JobId, @FileName, @FilePath)";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -68,6 +68,7 @@ namespace JobPortalForFreshers.Controllers
             try
             {
                 using (SqlConnection conn = new SqlConnection("Server=ANU\\SQLEXPRESS;Database=JOBPORTAL;Integrated Security=True;Trust Server Certificate=True"))
+
                 {
                     string query = "SELECT FilePath, FileName FROM ResumeFiles WHERE UserId = @UserId AND JobId = @JobId";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -106,4 +107,4 @@ namespace JobPortalForFreshers.Controllers
             }
         }
     }
-    }
+}
